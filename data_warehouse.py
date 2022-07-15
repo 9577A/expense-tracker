@@ -1,5 +1,6 @@
 import os
 import csv
+import shutil
 
 
 # Function create_user() only takes string variable user_name
@@ -33,14 +34,19 @@ def create_user(username):
 
     #
     # create folder named "user_nickname"
-    os.makedirs("users\\"+username)
+    os.makedirs("users\\" + username)
 
     # create file "user_nickname_category.csv" in folder "username"
-    # dodaj kategorie jak (jedzenie, rozrywka)
+    # TODO dodaj kategorie jak (jedzenie, rozrywka)
     with open(f'users\\{username}\\{username}_category.csv', "w") as file:
         # categories is a list of categories of expanses
         categories = ['food', 'fitness']
         csv_writer = csv.writer(file, delimiter=',', lineterminator='\n')
+
+        # write down all expanses categories into file
+        for cat in categories:
+            csv_writer.writerow(cat)
+
     # create file "user_nickname_table.csv"
     with open(f'users\\{username}\\{username}_table.csv', "w") as file:
         pass
@@ -53,24 +59,29 @@ def create_user(username):
 
 
 # Function remove_user() takes string value of user username that is to be removed, **
-# to avoid mistakes if user is already deleted function returns FALSE,
-# if not it follows deletes user files and returns True.
 #
-# Function deletes user username from file user_names.csv and this user folder along with all files.
+# Function makes a list of all values in file user_names.csv without given value (which is to be deleted)
+# then function uses made list to rewrite file user_names.csv
 #
 def remove_user(username):
+    # open user_names.csv
+    with open('users\\user_names.csv', 'r') as file:
+        data = csv.reader(file, delimiter=',', lineterminator='\n')
+        newdata = []
+        # go through all lines and copy all of them into list rewrite
+        for line in data:
+            if username not in line:
+                newdata.append(line)
 
-    # check if user is in file user_names.csv
-    with open('users\\user_names.csv', 'r') as f:
-        x = csv.reader(f, delimiter=',', lineterminator='\n')
-        # go through all lines and check each one of them if there is already user username there
-        # if it is not, then return FALSE
-        for lines in x:
-            if username not in lines[0]:
-                return False
+        # open user_names.csv file and rewrite newdata list into it
+        with open('users\\user_names.csv', 'w') as file2:
+            csv_writer = csv.writer(file2, delimiter=',', lineterminator='\n')
+            # rewrite newdata list to file
+            for value in newdata:
+                csv_writer.writerow(value)
 
-    # delete user username from
-
+    # delete user folder (along with all his files)
+    shutil.rmtree(f'users//{username}')
 
 
 # Function add_record() takes:
@@ -86,20 +97,20 @@ def remove_user(username):
 def add_record():
     pass
 
-
+# TODO
 # Function remove_record() takes id of record that is to be removed.
 # Function deletes record with given id in file "user_nickname_table.csv".
 def remove_record():
     pass
 
-
+# TODO
 # Function alter_record() takes id int variable that is to be altered.
 # Function changes record with given id.
 #
 def alter_record():
     pass
 
-
+# TODO
 # Function add_expense_type() takes expense_type (string) variable that is to be added.
 #
 # Function firstly checks if expense_type variable is already in file "user_nickname_category.csv",
@@ -108,7 +119,7 @@ def alter_record():
 def add_expense_type(expense_type):
     pass
 
-
+# TODO
 # Function remove_expense_type() takes expense_type (string) variable that is to be removed.
 #
 # Function firstly checks if expense_type variable is in file "user_nickname_category.csv",
@@ -117,7 +128,7 @@ def add_expense_type(expense_type):
 def remove_expense_type(expense_type):
     pass
 
-
+# TODO
 # Function alter_expense_type() takes expense_type, new_expense_type (string) variables that is to be altered.
 #
 # Function firstly checks if expense_type variable is in file "user_nickname_category.csv",
